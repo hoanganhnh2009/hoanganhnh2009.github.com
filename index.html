@@ -1,2 +1,93 @@
+<!DOCTYPE html>
+<html lang="">
 
-<h1>Hello every Body</h1>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bảng giá</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.3/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">PRICE LIST</h1>
+        <form>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Tổng tiền</label>
+                <input type="number" value="300000000" id="totalId" class="form-control" placeholder="VNĐ">
+                <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                else.</small> -->
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Phần trăm</label>
+                <input type="number" value="0.2" class="form-control" id="percentId" placeholder="%">
+            </div>
+            <button type="button" id="onSubmit" class="btn btn-primary">Tính </button>
+            <div>
+                <ul id="listInfo">
+
+                </ul>
+            </div>
+        </form>
+    </div>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        let date = 0;
+        let monthTemp = 0;
+        Number.prototype.format = function (n, x) {
+            const currency = "₫";
+            var re = "\\d(?=(\\d{" + (x || 3) + "})+" + (n > 0 ? "\\." : "$") + ")";
+            return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, "g"), "$&,") + " " + currency;
+        };
+        function getDate(totalPrice, percent, defaultPrice) {
+            date++;
+            let tienlai = ((totalPrice * percent) / 100 / 1000).toFixed(0) * 1000;
+            let tienconlai = totalPrice - tienlai;
+            let m = date / 30;
+            let y = Math.floor(m / 12);
+            if (date % 30 === 0) {
+                console.group("m" + m)
+                console.log(`${y} Năm ${m % 12} Tháng`);
+                let tien_da_nhan = defaultPrice - tienconlai;
+                let tien_chenh_lech_thang_truoc = tien_da_nhan - monthTemp
+                console.log("Tiền chênh lệch so với tháng trước: " + tien_chenh_lech_thang_truoc.format())
+                monthTemp = defaultPrice - tienconlai;
+                console.log("Tiền đã nhận", tien_da_nhan.format());
+                console.groupEnd("m" + m)
+                $("#listInfo").append(`<li style="margin-bottom:10px">
+                    <span style="color:orange">${y} Năm ${m % 12} Tháng</span><br/>
+                    - Tiền chênh lệch so với tháng trước: ${tien_chenh_lech_thang_truoc.format()} <br/>
+                    - Tiền đã nhận: ${tien_da_nhan.format()} <br/>
+                    - Số dư khả dụng: ${tienconlai.format()}
+                </li>`);
+            }
+
+            console.log("TCL: y", y)
+            // if (tienconlai >= 10 * 1000 * 1000) {
+            if (y <= 5) {
+                getDate(tienconlai, percent, defaultPrice);
+            }
+
+        }
+        document.getElementById("onSubmit").addEventListener("click", () => {
+            let percent = document.getElementById("percentId").value
+            let total = parseInt(document.getElementById("totalId").value)
+            getDate(total, percent, total)
+        })
+    </script>
+</body>
+
+</html>
