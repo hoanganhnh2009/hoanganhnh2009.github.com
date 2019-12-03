@@ -23,13 +23,12 @@
         <h1 class="text-center">PRICE LIST</h1>
         <form>
             <div class="form-group">
-                <label for="exampleInputEmail1">Tổng tiền</label>
-                <input type="number" value="300000000" id="totalId" class="form-control" placeholder="VNĐ">
-                <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
-                else.</small> -->
+                <label for="exampleInputEmail1">Tổng tiền ban đầu (VNĐ)</label>
+                <input type="text" value="300000000" class="number-separator form-control" id="totalId" placeholder="VNĐ">
+                <small id="emailHelp" class="form-text text-muted">Số tiền đầu tư.</small>
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">Phần trăm</label>
+                <label for="exampleInputPassword1">Phần trăm (%)</label>
                 <input type="number" value="0.2" class="form-control" id="percentId" placeholder="%">
             </div>
             <button type="button" id="onSubmit" class="btn btn-primary">Tính </button>
@@ -42,13 +41,60 @@
     </div>
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            // Currency Separator
+            var commaCounter = 10;
+
+            function numberSeparator(Number) {
+                Number += '';
+
+                for (var i = 0; i < commaCounter; i++) {
+                    Number = Number.replace(',', '');
+                }
+
+                x = Number.split('.');
+                y = x[0];
+                z = x.length > 1 ? '.' + x[1] : '';
+                var rgx = /(\d+)(\d{3})/;
+
+                while (rgx.test(y)) {
+                    y = y.replace(rgx, '$1' + ',' + '$2');
+                }
+                commaCounter++;
+                return y + z;
+            }
+
+            // Set Currency Separator to input fields
+            $('.number-separator').on('input', function (e) {
+                if (/^-?\d*[,.]?(\d{0,3},)*(\d{3},)?\d{0,3}$/.test(e.originalEvent.data)) {
+                    e.target.value = numberSeparator(e.target.value);
+                } else {
+                    e.target.value = e.target.value.substring(0, e.target.value.length - 1);
+                }
+            });
+
+            $(document).on('input', '.number-separator', function (e) {
+                if (/^-?\d*[,.]?(\d{0,3},)*(\d{3},)?\d{0,3}$/.test(e.originalEvent.data)) {
+                    e.target.value = numberSeparator(e.target.value);
+                } else {
+                    e.target.value = e.target.value.substring(0, e.target.value.length - 1);
+                }
+            });
+        });
+    </script>
+
     <!-- Bootstrap JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
         let date = 0;
         let monthTemp = 0;
         Number.prototype.format = function (n, x) {
-            const currency = "₫";
+            // const currency = "₫";
+            const currency = "0";
             var re = "\\d(?=(\\d{" + (x || 3) + "})+" + (n > 0 ? "\\." : "$") + ")";
             return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, "g"), "$&,") + " " + currency;
         };
