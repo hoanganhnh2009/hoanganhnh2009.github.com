@@ -31,10 +31,9 @@
                 <label for="exampleInputPassword1">Phần trăm (%)</label>
                 <input type="text" value="0.2" class="form-control" id="percentId" placeholder="%">
             </div>
-            <button type="button" id="onSubmit" class="btn btn-primary">Tính </button>
+            <button type="button" id="onSubmit" style="width:200px" class="btn btn-primary text-center">Tính </button>
             <div>
-                <ul id="listInfo">
-
+                <ul style="margin-top:10px" id="listInfo">
                 </ul>
             </div>
         </form>
@@ -69,17 +68,18 @@
             let m = date / 30;
             let y = Math.floor(m / 12);
             if (date % 30 === 0) {
-                console.group("m" + m)
-                console.log(`${y} Năm ${m % 12} Tháng`);
+                // console.group("m" + m)
+                // console.log(`${y} Năm ${m % 12} Tháng`);
                 let tien_da_nhan = defaultPrice - tienconlai;
                 let tien_chenh_lech_thang_truoc = tien_da_nhan - monthTemp
-                console.log("Tiền chênh lệch so với tháng trước: " + tien_chenh_lech_thang_truoc.format())
+                // console.log("Tiền chênh lệch so với tháng trước: " + tien_chenh_lech_thang_truoc.format())
                 monthTemp = defaultPrice - tienconlai;
-                console.log("Tiền đã nhận", tien_da_nhan.format());
-                console.groupEnd("m" + m)
-                $("#listInfo").append(`<li style="margin-bottom:10px">
+                // console.log("Tiền đã nhận", tien_da_nhan.format());
+                // console.groupEnd("m" + m)
+                let hightLight = m % 12
+                $("#listInfo").append(`<li style="margin-bottom:10px;padding:5px;list-style:none;${!hightLight && 'background-color:green'}">
                     <span style="color:orange">${y} Năm ${m % 12} Tháng</span><br/>
-                    - Tiền chênh lệch so với tháng trước: ${tien_chenh_lech_thang_truoc.format()} <br/>
+                    - Tiền nhận được / 1 tháng: ${tien_chenh_lech_thang_truoc.format()} <br/>
                     - Tiền đã nhận: ${tien_da_nhan.format()} <br/>
                     - Số dư khả dụng: ${tienconlai.format()}
                 </li>`);
